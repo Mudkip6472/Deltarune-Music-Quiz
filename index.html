@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Deltarune Music Quiz</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0d1a;
+    --bg2: #141428;
+    --bg3: #1a1a35;
+    --card: #1e1e3a;
+    --border: #3a3a6a;
+    --accent: #7c5cbf;
+    --accent2: #a07ee0;
+    --gold: #f5c842;
+    --red: #e05050;
+    --green: #50c87a;
+    --text: #e8e6f0;
+    --muted: #8888aa;
+    --pixel: 'Press Start 2P', monospace;
+    --body: 'Nunito', sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--body);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-x: hidden;
+  }
+
+  /* Stars background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      radial-gradient(1px 1px at 10% 15%, rgba(255,255,255,0.5) 0%, transparent 100%),
+      radial-gradient(1px 1px at 25% 60%, rgba(255,255,255,0.3) 0%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 45% 30%, rgba(255,255,255,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 60% 80%, rgba(255,255,255,0.3) 0%, transparent 100%),
+      radial-gradient(1px 1px at 75% 20%, rgba(255,255,255,0.5) 0%, transparent 100%),
+      radial-gradient(1.5px 1.5px at 85% 55%, rgba(255,255,255,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 90% 90%, rgba(255,255,255,0.3) 0%, transparent 100%),
+      radial-gradient(1px 1px at 5% 85%, rgba(255,255,255,0.4) 0%, transparent 100%),
+      radial-gradient(1px 1px at 35% 45%, rgba(255,255,255,0.2) 0%, transparent 100%),
+      radial-gradient(1px 1px at 55% 10%, rgba(255,255,255,0.3) 0%, transparent 100%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 540px;
+    padding: 40px 24px 60px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 32px;
+  }
+
+  .logo-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    animation: fadein 0.7s ease both;
+  }
+  .logo-img {
+    width: 220px;
+    filter: drop-shadow(0 0 18px rgba(124,92,191,0.7));
+  }
+  .subtitle {
+    font-family: var(--pixel);
+    font-size: 9px;
+    color: var(--gold);
+    letter-spacing: 2px;
+    text-align: center;
+    text-shadow: 0 0 10px rgba(245,200,66,0.5);
+    margin-top: 4px;
+  }
+
+  .card {
+    width: 100%;
+    background: var(--card);
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    padding: 28px 28px;
+    animation: fadein 0.7s ease 0.1s both;
+  }
+  .card h2 {
+    font-family: var(--pixel);
+    font-size: 10px;
+    color: var(--accent2);
+    margin-bottom: 20px;
+    letter-spacing: 1px;
+  }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 16px;
+  }
+  .field label {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .field input {
+    background: var(--bg2);
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: var(--body);
+    font-size: 16px;
+    font-weight: 600;
+    padding: 12px 14px;
+    outline: none;
+    transition: border-color 0.2s;
+    width: 100%;
+  }
+  .field input:focus { border-color: var(--accent2); }
+  .field input::placeholder { color: var(--muted); }
+
+  .btn {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 8px;
+    font-family: var(--pixel);
+    font-size: 10px;
+    cursor: pointer;
+    letter-spacing: 1px;
+    transition: all 0.15s;
+  }
+  .btn-primary {
+    background: var(--accent);
+    color: #fff;
+    box-shadow: 0 4px 18px rgba(124,92,191,0.4);
+  }
+  .btn-primary:hover { background: var(--accent2); transform: translateY(-1px); box-shadow: 0 6px 22px rgba(124,92,191,0.5); }
+  .btn-secondary {
+    background: transparent;
+    color: var(--accent2);
+    border: 1.5px solid var(--border);
+    margin-top: 10px;
+  }
+  .btn-secondary:hover { border-color: var(--accent2); background: rgba(124,92,191,0.1); }
+
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 8px 0;
+  }
+  .divider span { color: var(--muted); font-size: 12px; font-weight: 700; }
+  .divider::before, .divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .status-msg {
+    font-size: 14px;
+    font-weight: 600;
+    padding: 10px 14px;
+    border-radius: 8px;
+    margin-top: 14px;
+    display: none;
+  }
+  .status-msg.error { background: rgba(224,80,80,0.15); border: 1px solid var(--red); color: var(--red); display: block; }
+  .status-msg.success { background: rgba(80,200,122,0.15); border: 1px solid var(--green); color: var(--green); display: block; }
+  .status-msg.info { background: rgba(124,92,191,0.15); border: 1px solid var(--accent); color: var(--accent2); display: block; }
+
+  .waiting-room {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    padding: 20px 0 4px;
+  }
+  .waiting-room.show { display: flex; }
+  .game-code-display {
+    font-family: var(--pixel);
+    font-size: 22px;
+    color: var(--gold);
+    letter-spacing: 6px;
+    text-shadow: 0 0 14px rgba(245,200,66,0.6);
+  }
+  .waiting-label {
+    font-size: 13px;
+    color: var(--muted);
+    font-weight: 600;
+    text-align: center;
+  }
+  .pulse-dot {
+    width: 10px; height: 10px;
+    background: var(--accent2);
+    border-radius: 50%;
+    animation: pulse 1.2s ease-in-out infinite;
+    display: inline-block;
+  }
+
+  @keyframes fadein { from { opacity:0; transform: translateY(12px); } to { opacity:1; transform: none; } }
+  @keyframes pulse { 0%,100% { opacity:1; transform: scale(1); } 50% { opacity:0.4; transform: scale(0.7); } }
+
+  .footer-note {
+    font-size: 12px;
+    color: var(--muted);
+    text-align: center;
+    opacity: 0.6;
+    animation: fadein 0.7s ease 0.3s both;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="logo-wrap">
+    <img class="logo-img" src="deltarune_logo.png" alt="Deltarune" onerror="this.style.display='none'; document.getElementById('logo-text').style.display='block'">
+    <div id="logo-text" style="display:none; font-family:'Press Start 2P',monospace; font-size:18px; color:#a07ee0; text-shadow:0 0 18px rgba(160,126,224,0.7);">DELTARUNE</div>
+    <div class="subtitle">★ MUSIC QUIZ ★</div>
+  </div>
+
+  <div class="card">
+    <h2>&#9834; Set Your Name</h2>
+    <div class="field">
+      <label>Username</label>
+      <input type="text" id="username-input" placeholder="Enter your name..." maxlength="18" autocomplete="off">
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>&#9654; Create Game</h2>
+    <p style="font-size:14px; color:var(--muted); margin-bottom:18px; font-weight:600;">Start a new match. Share the code with a friend.</p>
+    <button class="btn btn-primary" onclick="createGame()">Create New Match</button>
+
+    <div class="waiting-room" id="waiting-room">
+      <div class="waiting-label">Share this code with your opponent:</div>
+      <div class="game-code-display" id="display-code">----</div>
+      <div class="waiting-label"><span class="pulse-dot"></span>&nbsp; Waiting for opponent to join...</div>
+      <button class="btn btn-secondary" onclick="cancelGame()">Cancel</button>
+    </div>
+    <div class="status-msg" id="create-status"></div>
+  </div>
+
+  <div class="divider"><span>or</span></div>
+
+  <div class="card">
+    <h2>&#9654; Join Game</h2>
+    <p style="font-size:14px; color:var(--muted); margin-bottom:18px; font-weight:600;">Enter a code from your opponent.</p>
+    <div class="field">
+      <label>Game Code</label>
+      <input type="text" id="join-code-input" placeholder="e.g. AB12" maxlength="4" autocomplete="off" style="text-transform:uppercase; letter-spacing:4px; font-family:'Press Start 2P',monospace; font-size:14px;" oninput="this.value=this.value.toUpperCase()">
+    </div>
+    <button class="btn btn-primary" onclick="joinGame()">Join Match</button>
+    <div class="status-msg" id="join-status"></div>
+  </div>
+
+  <div class="footer-note">Deltarune is created by Toby Fox. This is a fan-made quiz for personal use.</div>
+</div>
+
+<!-- Firebase -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getDatabase, ref, set, get, onValue, update, remove } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+  // ── PASTE YOUR FIREBASE CONFIG HERE ──────────────────────────────────────
+  const firebaseConfig = {
+   apiKey: "AIzaSyCamY00TjbuPKn1ji_NYCBuMIN3bVJSYg8",
+    authDomain: "deltarune-quiz-2bc37.firebaseapp.com",
+    databaseURL: "https://deltarune-quiz-2bc37-default-rtdb.firebaseio.com/",
+    projectId: "deltarune-quiz-2bc37",
+    storageBucket: "deltarune-quiz-2bc37.firebasestorage.app",
+    messagingSenderId: "831072144832",
+    appId: "1:831072144832:web:f8047a0f655dcd93208c25"
+  };
+  // ─────────────────────────────────────────────────────────────────────────
+
+  const app = initializeApp(firebaseConfig);
+  const db = getDatabase(app);
+
+  let myGameCode = null;
+  let gameListener = null;
+
+  function getUsername() {
+    const val = document.getElementById('username-input').value.trim();
+    if (!val) { return null; }
+    return val;
+  }
+
+  function showStatus(id, msg, type) {
+    const el = document.getElementById(id);
+    el.textContent = msg;
+    el.className = 'status-msg ' + type;
+  }
+
+  function hideStatus(id) {
+    document.getElementById(id).className = 'status-msg';
+  }
+
+  function generateCode() {
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    return Array.from({length:4}, () => chars[Math.floor(Math.random()*chars.length)]).join('');
+  }
+
+  window.createGame = async function() {
+    const username = getUsername();
+    if (!username) { showStatus('create-status', 'Please enter a username first!', 'error'); return; }
+    hideStatus('create-status');
+
+    const code = generateCode();
+    myGameCode = code;
+
+    try {
+      await set(ref(db, 'games/' + code), {
+        status: 'waiting',
+        host: username,
+        hostScore: 0,
+        guest: null,
+        guestScore: 0,
+        createdAt: Date.now(),
+        currentRound: 0,
+        roundData: null
+      });
+
+      document.getElementById('display-code').textContent = code;
+      document.getElementById('waiting-room').classList.add('show');
+
+      // Watch for guest joining
+      gameListener = onValue(ref(db, 'games/' + code), (snap) => {
+        const data = snap.val();
+        if (!data) return;
+        if (data.status === 'playing' && data.guest) {
+          // Guest joined — go to game
+          if (gameListener) gameListener();
+          window.location.href = `game.html?code=${code}&player=host&name=${encodeURIComponent(username)}`;
+        }
+      });
+    } catch(e) {
+      showStatus('create-status', 'Error creating game. Check your Firebase config.', 'error');
+      console.error(e);
+    }
+  };
+
+  window.cancelGame = async function() {
+    if (myGameCode) {
+      if (gameListener) gameListener();
+      await remove(ref(db, 'games/' + myGameCode));
+      myGameCode = null;
+    }
+    document.getElementById('waiting-room').classList.remove('show');
+  };
+
+  window.joinGame = async function() {
+    const username = getUsername();
+    if (!username) { showStatus('join-status', 'Please enter a username first!', 'error'); return; }
+    const code = document.getElementById('join-code-input').value.trim().toUpperCase();
+    if (code.length !== 4) { showStatus('join-status', 'Enter a 4-character game code.', 'error'); return; }
+
+    showStatus('join-status', 'Looking for game...', 'info');
+
+    try {
+      const snap = await get(ref(db, 'games/' + code));
+      if (!snap.exists()) { showStatus('join-status', 'Game not found. Check the code!', 'error'); return; }
+      const data = snap.val();
+      if (data.status !== 'waiting') { showStatus('join-status', 'That game has already started.', 'error'); return; }
+      if (data.guest) { showStatus('join-status', 'Game is already full.', 'error'); return; }
+
+      await update(ref(db, 'games/' + code), {
+        guest: username,
+        status: 'playing'
+      });
+
+      window.location.href = `game.html?code=${code}&player=guest&name=${encodeURIComponent(username)}`;
+    } catch(e) {
+      showStatus('join-status', 'Error joining game. Check your Firebase config.', 'error');
+      console.error(e);
+    }
+  };
+</script>
+</body>
+</html>
